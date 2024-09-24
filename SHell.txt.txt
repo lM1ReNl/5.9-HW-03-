@@ -1,0 +1,81 @@
+Задания для выполнения в консоли Shell:
+
+1.	Создать двух пользователей (с помощью метода User.objects.create_user('username')).
+u1 = User.objects.create_user(username='Maxim')
+u2 = User.objects.create_user(username='Petr')
+u3 = User.objects.create_user(username='Boris')
+
+2.	Создать два объекта модели Author, связанные с пользователями.
+a1 = Author.objects.create(user=u1, full_name="Иванов Иван Иванович")
+a2 = Author.objects.create(user=u2, full_name="Петров Петр Петрович")
+a3 = Author.objects.create(user=u2, full_name="Борисов Борис Борисович")
+
+3.	Добавить 4 категории в модель Category.
+cat1 = Category.objects.create(category_name="Свежие новости")
+cat1.save()
+cat2 = Category.objects.create(category_name="Политика")
+cat2.save()
+cat3 = Category.objects.create(category_name="Культура")
+cat3.save()
+cat4 = Category.objects.create(category_name="Образование")
+cat4.save()
+cat5 = Category.objects.create(category_name="Sports")
+cat5.save()
+
+4.	Добавить 2 статьи и 1 новость.
+post1 = Post.objects.create(title="First Post On This Portal", text=" Первая новость создана на тестовом новостном портале в качестве домашнего задания на курсе Python-разработчик с полным пониманием слабой компетентности создателя базы данных", type='NE', author=a1)
+post1.save()
+post2 = Post.objects.create(title="First News", text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", type='AR', author=a2)
+post2.save()
+post3 = Post.objects.create(title="Second News", text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", type='AR', author=a2)
+post3.save()
+
+5.	Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий).
+post1.category.add(1)
+post1.save()
+post1.category.add(4)
+post1.save()
+post2.category.add(2) 
+post2.save()
+post3.category.add(3)
+post3.save()
+
+6.	Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+comm1 = Comment.objects.create(text="Круто! Удачи!", post=post1, user=u2)
+comm1.save()
+comm2 = Comment.objects.create(text="А скоро будут еще новости? Давайте, не ленитесь!", post=post1, user=u2)
+comm2.save()
+comm3 = Comment.objects.create(text="Nullam eget felis eget nunc lobortis mattis aliquam faucibus. Mauris pellentesque pulvinar pellentesque habitant. Alas!", post=post2, user=u1)
+comm3.save()
+comm4 = Comment.objects.create(text="Odio tempor orci dapibus ultrices in...", post=post2, user=u1)
+comm4.save()
+comm5 = Comment.objects.create(text="Я не знаю, я не знаю, я не знаю слов.Я не знаю, я не знаю, я не знаю слов.Я не знаю, я не знаю, я не знаю слов.", post=post3, user=u3)
+comm5.save()
+
+7.	Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+post1.like_post()
+post2.dislike_post()
+comm1.like_comment()
+comm3.dislike_comment()
+comm5.like_comment()
+post3.like_post()
+post3.like_post()
+comm5.like_comment()
+post1.dislike_post()
+comm4.like_comment()
+
+8.	Обновить рейтинги пользователей.
+a1.update_rating()
+a2.update_rating()
+a3.update_rating()
+
+9.	Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+best_user = Author.objects.order_by('-rating').values('user__username', 'rating').first()
+
+10.	Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+posts = Post.objects.order_by('-rating')
+best_post = posts.values('creation_date', 'author__user__username', 'rating', 'title').first()  
+best_preview = posts.first().preview()
+
+11.	Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+Post.objects.all().order_by('-rating').values('creation_date', 'author', 'rating', 'text').first()
